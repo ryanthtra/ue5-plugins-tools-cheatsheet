@@ -1,13 +1,22 @@
 # ue5-plugins-tools-cheatsheet
-Simple notes on how to create plugins for Unreal Engine 5.
+Simple notes on how to create plugins and tools for Unreal Engine 5.
 
 ## Environment:
 - Windows 11/10
 - Engine version: 5.x.x
 - Project Codebase: C++ (Noted if anything else like Blueprints, Python, etc.)
-- IDE: Visual Studio 2022
+- IDE: Visual Studio 2022 or JetBrains Rider
 
-## Useful Classes/Libraries for UE5 Tools
+## Useful Classes/Libraries for Developing UE5 Tools
+- [FMessageDialog](https://docs.unrealengine.com/5.2/en-US/API/Runtime/Core/Misc/FMessageDialog/)
+    ```c++
+    // Create and draw a popup modal.
+    // Basically returns which button on the modal was clicked.
+    EAppReturnType::Type Open(
+        EAppMsgType::Type MessageType, // Determines the set of buttons in the modal.
+        const FText& Message,
+        const FText* OptTitle) // Title of the modal window.
+    ```
 - [UEditorUtilityLibrary](https://docs.unrealengine.com/5.2/en-US/API/Editor/Blutility/UEditorUtilityLibrary/) (part of the ```Blutility``` module)
 
     ```c++
@@ -20,9 +29,20 @@ Simple notes on how to create plugins for Unreal Engine 5.
 
     ```c++
     // Duplicates an asset (from source path to destination path)
-    static UObject * DuplicateAsset(const FString& SourceAssetPath, const FString& DestinationPath)
+    static UObject * DuplicateAsset(
+        const FString& SourceAssetPath, 
+        const FString& DestinationPath)
     ```
 
+- [UGameplayStatics](https://docs.unrealengine.com/5.2/en-US/API/Runtime/Engine/Kismet/UGameplayStatics/) (part of ```Core``` module)
+
+    ```c++
+    // Find all actors of a certain class in the Level.
+    static void GetAllActorsOfClass(
+        const UObject* WorldContextObject, // usually UWorld* object by calling GEditor->GetEditorWorldContext().World()
+        TSubclassOf<AActor> ActorClass, // usually entered as MyActorClass::StaticClass()
+        TArray<AActor*> &OutActors) // The "return" array.
+    ```
 # Creating Plugin Module
 1. In the UE Editor, go to top menu->Edit->Plugins:
 
@@ -35,9 +55,10 @@ Simple notes on how to create plugins for Unreal Engine 5.
 3. In the New Plugin Window, select your template type, enter the folder path for your new plugin, and enter you new plugin's name.
 
 ![New Plugin Window](img/03_create_plugin.png "New Plugin window")
-    - Try to get your Plugin Name correct here, as renaming a plugin later on can be tedious.
-    - Entries for Descriptor Data and Advanced items are optional.
-    - Show Content Directory should remain checked.
+    
+- Try to get your Plugin Name correct here, as renaming a plugin later on can be tedious.
+- Entries for Descriptor Data and Advanced items are optional.
+- Show Content Directory should remain checked.
 
 4. Go to Visual Studio for the project (if not already open, go to Tools->Open Visual Studio).
 
