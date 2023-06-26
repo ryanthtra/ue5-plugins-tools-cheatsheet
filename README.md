@@ -7,6 +7,22 @@ Simple notes on how to create plugins for Unreal Engine 5.
 - Project Codebase: C++ (Noted if anything else like Blueprints, Python, etc.)
 - IDE: Visual Studio 2022
 
+## Useful Classes/Libraries for UE5 Tools
+- [UEditorUtilityLibrary](https://docs.unrealengine.com/5.2/en-US/API/Editor/Blutility/UEditorUtilityLibrary/) (part of the ```Blutility``` module)
+
+    ```c++
+    // Gets the set of currently selected assets (in the Content Browser)
+    static TArray<UObject*> GetSelectedAssets()
+    // Get the set of asset data from currently selected assets (in the Content Browser)
+    static TArray<FassetData&> GetSelectedAssetData()
+    ```
+- [UEditorAssetLibrary](https://docs.unrealengine.com/4.26/en-US/API/Plugins/EditorScriptingUtilities/UEditorAssetLibrary/) (part of the ```EditorScriptingUtilities``` module)
+
+    ```c++
+    // Duplicates an asset (from source path to destination path)
+    static UObject * DuplicateAsset(const FString& SourceAssetPath, const FString& DestinationPath)
+    ```
+
 # Creating Plugin Module
 1. In the UE Editor, go to top menu->Edit->Plugins:
 
@@ -33,4 +49,38 @@ Simple notes on how to create plugins for Unreal Engine 5.
 
 7. Close your Editor project, and then re-build the C++ project in VS (can use the shortcut Ctrl+F5), which will also re-open the Editor.
 
-# Asset Action Utility (UAssetActionUtility class)
+# Asset Action Utility ([UAssetActionUtility](https://docs.unrealengine.com/5.2/en-US/API/Editor/Blutility/UAssetActionUtility/))
+- A right-click menu item function (under "Scripted Asset Actions") on an asset in the Content Browser.
+1. In the Editor, select top menu->Tools->New C++ Class...
+
+![New C++ Class](img/05_asset_action_utility.png "New C++ Class")
+
+2. In the Add C++ Class window, select "All Classes", and type "AssetActionUtility" in the search bar.  Then, click Next>.
+
+![Add C++ Class](img/06_asset_action_utility.png "Add C++ Class")
+
+3. Give your new Class a name.  Make sure it is public and that it is part of your plugin project.
+
+![Name new C++ Class](img/06a_asset_action_utility.png "Name new C++ Class")
+
+4. Add the Blutility module to PublicDependencyModuleNames in the Plugin's Build.cs file.  (The Blutility module is what contains the UAssetActionUtlity's header file.)
+
+![Add Blutility](img/07_asset_action_utility.png "Add Blutility")
+
+5. Since the Blutility module is private, we must also add the path of this module to the PrivateIncludePaths array:
+
+![Add Blutility Private Path](img/08_asset_action_utility.png "Add Blutility Private Path")
+
+6. In the IDE and in the header file for your new Asset Action Utility subclass, declare the function that will be the menu item.  Give it the ```UFUNCTION(CallInEditor)``` attribute.
+
+    ```c++
+    UCLASS()
+    class MYPLUGIN_API UMyAssetAction : public UAssetActionUtility
+    {
+        GENERATED_BODY()
+
+    public:
+        UFUNCTION(CallInEditor)
+        void MyFunction();
+    ...
+    ```
