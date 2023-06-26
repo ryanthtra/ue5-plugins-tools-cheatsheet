@@ -17,6 +17,18 @@ Simple notes on how to create plugins and tools for Unreal Engine 5.
         const FText& Message,
         const FText* OptTitle) // Title of the modal window.
     ```
+
+- [FNotificationInfo](https://docs.unrealengine.com/5.2/en-US/API/Runtime/Slate/Widgets/Notifications/FNotificationInfo/) and [FSlateNotificationManager](https://docs.unrealengine.com/5.2/en-US/API/Runtime/Slate/Framework/Notifications/FSlateNotificationManager/)
+    ```c++
+    // Use to create toast notifications for the Editor, such as when the execution of your tool has finished.
+    // Basic usage case:
+    FString& Message = TEXT("Custom tool functionality is done!");
+    FNotificationInfo NotifyInfo(FText::FromString(Message)); // Constructor
+	NotifyInfo.bUseLargeFont = true;
+	NotifyInfo.FadeOutDuration = 7.f; // Toast will fade out in 7 seconds.
+    // Basically makes the toast appear.
+	FSlateNotificationManager::Get().AddNotification(NotifyInfo);
+    ```
 - [UEditorUtilityLibrary](https://docs.unrealengine.com/5.2/en-US/API/Editor/Blutility/UEditorUtilityLibrary/) (part of the ```Blutility``` module)
 
     ```c++
